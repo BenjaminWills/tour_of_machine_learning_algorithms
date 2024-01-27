@@ -1,1 +1,0 @@
-# Ordinary least squares regression

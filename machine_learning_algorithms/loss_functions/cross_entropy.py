@@ -3,6 +3,16 @@ import numpy as np
 from typing import List
 
 
+"""
+Cross entropy is a loss function commonly used in machine learning algorithms 
+to measure the dissimilarity between predicted values and true values. 
+It calculates the average log loss by taking the dot product of the true 
+values and the logarithm of the predicted values. The logarithm is used 
+to penalize larger differences between the predicted and true values. 
+The cross entropy is then divided by the number of data points to obtain the average loss.
+"""
+
+
 def cross_entropy(predictions: List[np.array], truths: List[np.array]):
     """
     Calculate the cross entropy between two arrays.

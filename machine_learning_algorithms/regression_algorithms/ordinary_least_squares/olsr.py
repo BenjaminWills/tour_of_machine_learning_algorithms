@@ -2,11 +2,25 @@ import pandas as pd
 import numpy as np
 
 from machine_learning_algorithms.logger import make_logger
+from machine_learning_algorithms.loss_functions.mean_squared_error import (
+    mean_squared_error,
+)
 
 logger = make_logger()
 
 
 def load_data(csv_path: str, dependent_column_name: str) -> np.ndarray:
+    """
+    Load data from a CSV file and separate the dependent variable and independent variables.
+
+    Args:
+        csv_path (str): The path to the CSV file.
+        dependent_column_name (str): The name of the dependent variable column.
+
+    Returns:
+        np.ndarray: The dependent variable array.
+        np.ndarray: The independent variables array.
+    """
     dataframe = pd.read_csv(csv_path, index_col=None)
 
     dependent_variable = dataframe[dependent_column_name].to_numpy()
@@ -15,19 +29,23 @@ def load_data(csv_path: str, dependent_column_name: str) -> np.ndarray:
     return dependent_variable, independent_variables
 
 
-def mean_square_error(
-    true_answers: np.ndarray, coefficients: np.ndarray, dependent_variables: np.ndarray
-) -> float:
-    return np.linalg.norm(true_answers - np.dot(dependent_variables, coefficients)) ** 2
-
-
 def find_optimal_coefficients(x_data: np.ndarray, y_data: np.ndarray) -> np.ndarray:
+    """
+    Find the optimal coefficients for the ordinary least squares regression model.
+
+    Args:
+        x_data (np.ndarray): The independent variables.
+        y_data (np.ndarray): The dependent variable.
+
+    Returns:
+        np.ndarray: The optimal coefficients.
+    """
     n = len(x_data)
 
     # Define the matrix A with a one in the first column to account for the intercept.
     A = np.c_[np.ones(n), x_data]
 
-    # Calculate teh coefficents.
+    # Calculate the coefficients.
     pseudo_inverse = np.linalg.inv(np.dot(A.T, A))
 
     # intercept, coefficient_1, coefficient_2, ...
@@ -45,6 +63,13 @@ def find_optimal_coefficients(x_data: np.ndarray, y_data: np.ndarray) -> np.ndar
 
 class olsr_regressor:
     def __init__(self, csv_path: str, dependent_variable_name: str) -> None:
+        """
+        Initialize the OLSR regressor.
+
+        Args:
+            csv_path (str): The path to the CSV file.
+            dependent_variable_name (str): The name of the dependent variable column.
+        """
         self.dependent_variable_name = dependent_variable_name
 
         dependent_variable, independent_variables = load_data(
@@ -59,6 +84,15 @@ class olsr_regressor:
         self.independent_variable = independent_variables
 
     def predict(self, independent_variables: np.array) -> float:
+        """
+        Predict the dependent variable value based on the given independent variables.
+
+        Args:
+            independent_variables (np.array): The independent variables.
+
+        Returns:
+            float: The predicted dependent variable value.
+        """
         intercept = self.optimal_coefficients[0]
         coefficents = self.optimal_coefficients[1:]
 
@@ -67,19 +101,25 @@ class olsr_regressor:
         return intercept + prediction
 
     def make_multiple_predictions(self, test_path: str):
+        """
+        Make multiple predictions on the test data and calculate the mean square error.
+
+        Args:
+            test_path (str): The path to the test data CSV file.
+
+        Returns:
+            float: The mean square error.
+            list: The predicted values.
+            list: The true values.
+        """
         dependent_variable, independent_variables = load_data(
             test_path, self.dependent_variable_name
         )
-        errors = []
-        predictions = []
+        predictions = list(map(self.predict, independent_variables))
 
-        for dependent, independent in zip(dependent_variable, independent_variables):
-            prediction = self.predict(independent)
-            error = (dependent - prediction) ** 2
-            errors.append(error)
-            predictions.append(prediction)
-
-        mean_square_error = np.array(errors).mean()
+        mean_square_error = mean_squared_error(
+            np.array(predictions), dependent_variable
+        )
 
         logger.info(
             f"\t\n Error when predicting on the test path: {test_path} \t\n The mean square error is {mean_square_error}"

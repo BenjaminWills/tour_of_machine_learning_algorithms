@@ -2,10 +2,10 @@ import unittest
 import numpy as np
 
 from machine_learning_algorithms.regression_algorithms.ordinary_least_squares.olsr import (
-    load_data,
     find_optimal_coefficients,
     olsr_regressor,
 )
+from machine_learning_algorithms.data_engineering.data_loaders import load_data
 
 
 class TestLoadData(unittest.TestCase):

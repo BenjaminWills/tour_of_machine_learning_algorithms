@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def mean_square_error(predictions: np.array, truths: np.array) -> float:
+def mean_squared_error(predictions: np.array, truths: np.array) -> float:
     """
     Calculate the mean square error between two arrays.
 
@@ -12,6 +12,15 @@ def mean_square_error(predictions: np.array, truths: np.array) -> float:
     Returns:
         float: Mean square error between the two arrays.
     """
+
+    # Check if the arrays are empty
+    if len(predictions) == 0 and len(truths) == 0:
+        return 0.0
+
+    # Check if the arrays have the same length
+    if len(predictions) != len(truths):
+        raise ValueError("The predictions and truths should have the same length")
+
     # Calculate the difference between predictions and truths
     difference = predictions - truths
 

@@ -46,7 +46,13 @@ def find_optimal_coefficients(x_data: np.ndarray, y_data: np.ndarray) -> np.ndar
     A = np.c_[np.ones(n), x_data]
 
     # Calculate the coefficients.
-    pseudo_inverse = np.linalg.inv(np.dot(A.T, A))
+    transpose_product = np.dot(A.T, A)
+    # Check if the matrix is invertible.
+    if np.linalg.det(transpose_product) == 0:
+        raise ValueError(
+            "The matrix is not invertible. Please check your data for multicollinearity."
+        )
+    pseudo_inverse = np.linalg.inv(transpose_product)
 
     # intercept, coefficient_1, coefficient_2, ...
     co_efficients = np.dot(pseudo_inverse, np.dot(A.T, y_data))

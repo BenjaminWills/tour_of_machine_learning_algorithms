@@ -1,7 +1,19 @@
 import numpy as np
 
+from typing import List
 
-def cross_entropy(predictions: np.array, truths: np.array):
+
+def cross_entropy(predictions: List[np.array], truths: List[np.array]):
+    """
+    Calculate the cross entropy between two arrays.
+
+    Args:
+        predictions (List[np.array]): Array containing predicted values.
+        truths (List[np.array]): Array containing true values.
+
+    Returns:
+        float: Cross entropy between the two arrays.
+    """
     # Calculate the number of datapoints
     num_data_points = len(predictions)
 

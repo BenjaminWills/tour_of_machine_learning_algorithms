@@ -1,2 +1,9 @@
+# Data handlers
 pandas
+
+# Mathematical operations
 numpy
+
+# Add linters
+black
+black[jupyter]

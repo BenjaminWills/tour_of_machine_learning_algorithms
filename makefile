@@ -2,6 +2,5 @@ lint:
 	black .
 
 test:
-	python -m tests.initialise
-	python -m unittest discover -s ./tests
-	python -m tests.finalise
+	docker build -t my-python-app .
+	docker run my-python-app

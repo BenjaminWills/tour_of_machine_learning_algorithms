@@ -62,3 +62,4 @@ $$
 
 Is the equation of the decision boundary, see the image below for clarity on this:
 
+<img width="554" alt="Screenshot 2024-01-28 at 17 42 08" src="https://github.com/BenjaminWills/tour_of_machine_learning_algorithms/assets/90726430/2d0b689a-06d7-4787-83b7-19891105e17a">

@@ -2,7 +2,9 @@ import numpy as np
 
 from machine_learning_algorithms.loss_functions.cross_entropy import cross_entropy
 from machine_learning_algorithms.logger import make_logger
-from machine_learning_algorithms.data_engineering.data_loaders import load_data
+from machine_learning_algorithms.data_engineering.data_loaders import (
+    load_categorical_data,
+)
 from machine_learning_algorithms.optimisation_algorithms.gradient_descent.gradient_descent import (
     gradient_descent,
 )
@@ -85,7 +87,44 @@ class logistic_regressor:
     def __init__(
         self, data_path: str, classification_variable_name: str, threshold: float
     ) -> None:
-        classification_variables, independent_variables = load_data(
+        independent_variables, categorical_data = load_categorical_data(
             data_path, classification_variable_name
         )
         self.threshold = threshold
+
+        self.coefficients = find_optimal_coefficients(
+            independent_variables, categorical_data
+        )
+
+    def predict(self, independent_variables: np.ndarray) -> np.ndarray:
+        """
+        Predict the classes of the independent variables.
+
+        Args:
+            independent_variables (np.ndarray): The independent variables.
+
+        Returns:
+            np.ndarray: The predicted classes.
+        """
+        number_of_samples, number_of_features = independent_variables.shape
+
+        # Real data is a matrix with the shape (number of samples, number of features) and we want to add a column of ones
+        # to the matrix to represent the intercept term
+        independent_variables = np.c_[np.ones(number_of_samples), independent_variables]
+
+        predicted_probabilities = []
+        for independent_variable in independent_variables:
+            probability_of_class_1 = sigmoid(
+                np.dot(independent_variable, self.coefficients)
+            )
+            probability_of_class_0 = 1 - probability_of_class_1
+            predicted_probabilities.append(
+                np.array([probability_of_class_0, probability_of_class_1])
+            )
+
+        predicted_probabilities = np.array(predicted_probabilities)
+        predicted_classes = np.argmax(predicted_probabilities, axis=1)
+        predicted_classes = np.where(
+            predicted_probabilities[:, 1] > self.threshold, 1, 0
+        )
+        return predicted_classes

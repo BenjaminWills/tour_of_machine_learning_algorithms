@@ -11,7 +11,7 @@ Below are the categories of machine learning that I want to implement and the al
 - [ ] Regression algorithms
   - [x] Ordinary Least Squares Regression (OLSR)
   - [x] Linear Regression
-  - [ ] Logistic Regression
+  - [x] Logistic Regression
   - [ ] Stepwise Regression
   - [ ] Multivariate Adaptive Regression Splines (MARS)
   - [ ] Locally Estimated Scatterplot Smoothing (LOESS)

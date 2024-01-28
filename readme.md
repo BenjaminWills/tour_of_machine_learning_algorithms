@@ -9,8 +9,8 @@ The repository is organized into different categories based on the type of machi
 Below are the categories of machine learning that I want to implement and the algoirthms
 
 - [ ] Regression algorithms
-  - [ ] Ordinary Least Squares Regression (OLSR)
-  - [ ] Linear Regression
+  - [x] Ordinary Least Squares Regression (OLSR)
+  - [x] Linear Regression
   - [ ] Logistic Regression
   - [ ] Stepwise Regression
   - [ ] Multivariate Adaptive Regression Splines (MARS)

@@ -81,16 +81,20 @@ class logistic_regressor:
         self,
         data_path: str,
         classification_variable_name: str,
-        threshold: float,
         learning_rate: float = 0.01,
         number_of_iterations: int = 1000,
         gradient_threshold: float = 0.5,
         iteration_display_frequency: int = 100,
     ) -> None:
-        independent_variables, categorical_data = load_categorical_data(
-            data_path, classification_variable_name
-        )
-        self.threshold = threshold
+        (
+            independent_variables,
+            categorical_data,
+            categorical_columns,
+        ) = load_categorical_data(data_path, classification_variable_name)
+
+        self.category_mapping = {
+            index: column for index, column in enumerate(categorical_columns)
+        }
 
         self.coefficients = find_optimal_coefficients(
             independent_variables,
@@ -101,12 +105,15 @@ class logistic_regressor:
             iteration_display_frequency,
         )
 
-    def predict(self, independent_variables: np.ndarray) -> np.ndarray:
+    def predict(
+        self, independent_variables: np.ndarray, probability_threshold: float = 0.5
+    ) -> np.ndarray:
         """
         Predict the classes of the independent variables.
 
         Args:
             independent_variables (np.ndarray): The independent variables.
+            probability_threshold (float): The probability threshold to use to determine the class.
 
         Returns:
             np.ndarray: The predicted classes.
@@ -130,6 +137,6 @@ class logistic_regressor:
         predicted_probabilities = np.array(predicted_probabilities)
         predicted_classes = np.argmax(predicted_probabilities, axis=1)
         predicted_classes = np.where(
-            predicted_probabilities[:, 1] > self.threshold, 1, 0
+            predicted_probabilities[:, 1] > probability_threshold, 1, 0
         )
         return predicted_classes

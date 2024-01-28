@@ -24,7 +24,12 @@ def sigmoid(x: np.ndarray) -> np.ndarray:
 
 
 def find_optimal_coefficients(
-    independent_variables: np.ndarray, classification_column: np.ndarray
+    independent_variables: np.ndarray,
+    classification_column: np.ndarray,
+    learning_rate: float,
+    number_of_iterations: int,
+    gradient_threshold: float,
+    iteration_display_frequency: int,
 ) -> np.ndarray:
     """
     Find the optimal coefficients for the logistic regression model.
@@ -40,18 +45,6 @@ def find_optimal_coefficients(
 
     # Initialize the coefficients to zero
     initial_coefficients = np.zeros(number_of_features + 1)
-
-    # Define the learning rate
-    learning_rate = 0.01
-
-    # Define the number of iterations
-    number_of_iterations = 1000
-
-    # Define the gradient threshold
-    gradient_threshold = 0.5
-
-    # Define printing rate
-    iteration_display_frequency = 100
 
     # Define our cost function that we wish to minimise
     def cost_function(coefficients: np.ndarray) -> float:
@@ -85,7 +78,14 @@ def find_optimal_coefficients(
 
 class logistic_regressor:
     def __init__(
-        self, data_path: str, classification_variable_name: str, threshold: float
+        self,
+        data_path: str,
+        classification_variable_name: str,
+        threshold: float,
+        learning_rate: float = 0.01,
+        number_of_iterations: int = 1000,
+        gradient_threshold: float = 0.5,
+        iteration_display_frequency: int = 100,
     ) -> None:
         independent_variables, categorical_data = load_categorical_data(
             data_path, classification_variable_name
@@ -93,7 +93,12 @@ class logistic_regressor:
         self.threshold = threshold
 
         self.coefficients = find_optimal_coefficients(
-            independent_variables, categorical_data
+            independent_variables,
+            categorical_data,
+            learning_rate,
+            number_of_iterations,
+            gradient_threshold,
+            iteration_display_frequency,
         )
 
     def predict(self, independent_variables: np.ndarray) -> np.ndarray:

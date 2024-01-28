@@ -72,11 +72,11 @@ def find_optimal_coefficients(
 
     # minimise the cost function w.r.t the coefficients
     coefficients = gradient_descent(
-        cost_function=cost_function,
-        initial_coefficients=initial_coefficients,
+        function=cost_function,
+        initial_point=initial_coefficients,
         learning_rate=learning_rate,
-        gradient_threshold=gradient_threshold,
-        number_of_iterations=number_of_iterations,
+        tolerance=gradient_threshold,
+        max_iterations=number_of_iterations,
         iteration_display_frequency=iteration_display_frequency,
     )
 

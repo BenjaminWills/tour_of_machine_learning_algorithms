@@ -39,6 +39,7 @@ def gradient_descent(
     learning_rate: float = 0.01,
     tolerance: float = 1e-6,
     max_iterations: int = 10000,
+    iteration_display_frequency: int = 100,
 ) -> np.ndarray:
     """
     Perform gradient descent to find the minimum of a function.
@@ -60,6 +61,11 @@ def gradient_descent(
     for i in tqdm(range(max_iterations)):
         # Calculate the gradient at the current point
         gradient = calculate_gradient(function, point)
+
+        # Print the progress at every 100 iterations
+        if i % iteration_display_frequency == 0:
+            print(f"Function value at ieteration {i}: {function(point)}")
+            print(f"Gradient magnitude: {np.linalg.norm(gradient)}")
 
         # Check if the magnitude of the gradient is less than the tolerance
         if np.linalg.norm(gradient) < tolerance:

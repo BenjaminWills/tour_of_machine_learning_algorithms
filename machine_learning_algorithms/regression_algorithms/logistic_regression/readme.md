@@ -60,3 +60,5 @@ $$
 x_n = \frac{c}{\beta_n} - \frac{1}{\beta_n}\sum_{i = 0 }^{n-1}\beta_ix_i
 $$
 
+Is the equation of the decision boundary, see the image below for clarity on this:
+

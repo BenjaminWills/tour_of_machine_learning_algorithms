@@ -7,3 +7,6 @@ numpy
 # Add linters
 black
 black[jupyter]
+
+# Loading bars
+tqdm

@@ -77,6 +77,10 @@ def gradient_descent(
         # Take a step in the opposite direction of the gradient
         new_point = point - learning_rate * gradient
 
+        # Check if the new point is the same as the old point
+        if np.allclose(new_point, point, atol=1e-6):
+            break
+
         # Update the point
         point = new_point
 

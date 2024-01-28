@@ -46,7 +46,7 @@ def load_categorical_data(
         dataframe, classification_column_name
     )
 
-    dependent_variables = dataframe.to_numpy()
+    independent_variables = dataframe.to_numpy()
     categorical_data = one_hot_encoded_categorical_column.to_numpy()
 
     return independent_variables, categorical_data

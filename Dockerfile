@@ -5,7 +5,9 @@ FROM python:3.7-slim
 WORKDIR /app
 
 # Add the current directory contents into the container at /app
-ADD . /app
+ADD machine_learning_algorithms /app/machine_learning_algorithms
+ADD tests /app/tests
+ADD requirements.txt /app
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt

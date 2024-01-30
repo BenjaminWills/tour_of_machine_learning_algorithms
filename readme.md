@@ -18,7 +18,7 @@ Below are the categories of machine learning that I want to implement and the al
 
 ---
 - [ ] Instance-based Algorithms
-  - [ ] k-Nearest Neighbor (kNN)
+  - [x] k-Nearest Neighbor (kNN)
   - [ ] Learning Vector Quantization (LVQ)
   - [ ] Self-Organizing Map (SOM)
   - [ ] Locally Weighted Learning (LWL)

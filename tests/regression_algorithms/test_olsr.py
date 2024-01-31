@@ -5,25 +5,12 @@ from machine_learning_algorithms.regression_algorithms.ordinary_least_squares.ol
     find_optimal_coefficients,
     olsr_regressor,
 )
-from machine_learning_algorithms.data_engineering.data_loaders import load_data
 
+from sklearn.datasets import load_diabetes
 
-class TestLoadData(unittest.TestCase):
-    def test_load_data(self):
-        csv_path = "test.csv"
-        dependent_column_name = "target"
-
-        dependent_variable, independent_variables = load_data(
-            csv_path, dependent_column_name
-        )
-
-        # Assert that the dependent variable and independent variables are of type np.ndarray
-        self.assertIsInstance(dependent_variable, np.ndarray)
-        self.assertIsInstance(independent_variables, np.ndarray)
-
-        # Assert that the dependent variable and independent variables have the correct shapes
-        self.assertEqual(dependent_variable.shape, (3,))
-        self.assertEqual(independent_variables.shape, (3, 2))
+regression = load_diabetes()
+independent_variables = regression.data
+dependent_variable = regression.target
 
 
 class TestFindOptimalCoefficients(unittest.TestCase):
@@ -46,33 +33,41 @@ class TestFindOptimalCoefficients(unittest.TestCase):
 
 
 class TestOLSRRegressor(unittest.TestCase):
+    def setUp(self):
+        self.olsr = olsr_regressor(dependent_variable, independent_variables)
+
     def test_predict(self):
-        csv_path = "test.csv"
-        dependent_variable_name = "target"
-        olsr = olsr_regressor(csv_path, dependent_variable_name)
+        independent_variables = np.array(
+            [
+                0.03807591,
+                0.05068012,
+                0.06169621,
+                0.02187239,
+                -0.0442235,
+                -0.03482076,
+                -0.04340085,
+                -0.00259226,
+                0.01990749,
+                -0.01764613,
+            ]
+        )
 
-        independent_variables = np.array([2, 3])
-
-        prediction = olsr.predict(independent_variables)
+        prediction = self.olsr.predict(independent_variables)
 
         # Assert that the prediction is of type float
         self.assertIsInstance(prediction, float)
 
         # Assert that the prediction has the correct value
-        self.assertAlmostEqual(prediction, 6)
+        self.assertAlmostEqual(prediction, 206.1163854542022)
 
     def test_make_multiple_predictions(self):
-        csv_path = "test.csv"
-        dependent_variable_name = "target"
-        olsr = olsr_regressor(csv_path, dependent_variable_name)
-
-        test_path = "test.csv"
-
         (
             mean_square_error,
             predictions,
-            dependent_variable,
-        ) = olsr.make_multiple_predictions(test_path)
+            _,
+        ) = self.olsr.make_multiple_predictions(
+            independent_variables, dependent_variable
+        )
 
         # Assert that the mean square error is of type float
         self.assertIsInstance(mean_square_error, float)
@@ -82,8 +77,8 @@ class TestOLSRRegressor(unittest.TestCase):
         self.assertIsInstance(dependent_variable, np.ndarray)
 
         # Assert that the predictions and dependent variable have the correct lengths
-        self.assertEqual(len(predictions), 3)
-        self.assertEqual(len(dependent_variable), 3)
+        self.assertEqual(len(predictions), 442)
+        self.assertEqual(len(dependent_variable), 442)
 
 
 if __name__ == "__main__":

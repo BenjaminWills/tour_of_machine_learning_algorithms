@@ -10,3 +10,6 @@ black[jupyter]
 
 # Loading bars
 tqdm
+
+# Sklearn for datasets to test
+scikit-learn

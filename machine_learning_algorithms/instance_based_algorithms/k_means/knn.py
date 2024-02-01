@@ -48,15 +48,11 @@ class knn_classifier:
 
         # Sort the distances in ascending order
         sorted_distances: List[tuple] = sorted(distances.items(), key=lambda x: x[1])
-
-        try:
-            # Get the k nearest neighbours
-            k_nearest_neighbours: List[int] = [
-                self.classification_column[index][0]
-                for index, distance in sorted_distances[:k]
-            ]
-        except:
-            print(sorted_distances)
+        # Get the k nearest neighbours
+        k_nearest_neighbours: List[int] = [
+            self.classification_column[index]
+            for index, distance in sorted_distances[:k]
+        ]
 
         class_count = Counter(k_nearest_neighbours)
         most_common_class = class_count.most_common(1)[0][0]

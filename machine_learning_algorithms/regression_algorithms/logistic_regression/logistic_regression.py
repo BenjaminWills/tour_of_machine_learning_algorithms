@@ -9,6 +9,8 @@ from machine_learning_algorithms.optimisation_algorithms.gradient_descent.gradie
     gradient_descent,
 )
 
+from typing import Dict
+
 
 def sigmoid(x: np.ndarray) -> np.ndarray:
     """
@@ -79,26 +81,16 @@ def find_optimal_coefficients(
 class logistic_regressor:
     def __init__(
         self,
-        data_path: str,
-        classification_variable_name: str,
+        independent_variables: np.ndarray,
+        classification_variable: np.ndarray,
         learning_rate: float = 0.01,
         number_of_iterations: int = 1000,
         gradient_threshold: float = 0.5,
         iteration_display_frequency: int = 100,
     ) -> None:
-        (
-            independent_variables,
-            categorical_data,
-            categorical_columns,
-        ) = load_categorical_data(data_path, classification_variable_name)
-
-        self.category_mapping = {
-            index: column for index, column in enumerate(categorical_columns)
-        }
-
         self.coefficients = find_optimal_coefficients(
             independent_variables,
-            categorical_data,
+            classification_variable,
             learning_rate,
             number_of_iterations,
             gradient_threshold,

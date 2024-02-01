@@ -48,7 +48,9 @@ def find_optimal_coefficients(x_data: np.ndarray, y_data: np.ndarray) -> np.ndar
 
 
 class olsr_regressor:
-    def __init__(self, csv_path: str, dependent_variable_name: str) -> None:
+    def __init__(
+        self, dependent_variables: np.ndarray, independent_variable: np.ndarray
+    ) -> None:
         """
         Initialize the OLSR regressor.
 
@@ -56,20 +58,15 @@ class olsr_regressor:
             csv_path (str): The path to the CSV file.
             dependent_variable_name (str): The name of the dependent variable column.
         """
-        self.dependent_variable_name = dependent_variable_name
-
-        dependent_variable, independent_variables = load_data(
-            csv_path, dependent_variable_name
-        )
 
         self.optimal_coefficients = find_optimal_coefficients(
-            independent_variables, dependent_variable
+            independent_variable, dependent_variables
         )
 
-        self.dependent_variable = dependent_variable
-        self.independent_variable = independent_variables
+        self.dependent_variable = dependent_variables
+        self.independent_variable = independent_variable
 
-    def predict(self, independent_variables: np.array) -> float:
+    def predict(self, independent_variable: np.array) -> float:
         """
         Predict the dependent variable value based on the given independent variables.
 
@@ -82,11 +79,13 @@ class olsr_regressor:
         intercept = self.optimal_coefficients[0]
         coefficents = self.optimal_coefficients[1:]
 
-        prediction = np.dot(coefficents, independent_variables)
+        prediction = np.dot(coefficents, independent_variable)
 
         return intercept + prediction
 
-    def make_multiple_predictions(self, test_path: str):
+    def make_multiple_predictions(
+        self, independent_variable: np.ndarray, dependent_variable: np.ndarray
+    ) -> np.ndarray:
         """
         Make multiple predictions on the test data and calculate the mean square error.
 
@@ -98,17 +97,13 @@ class olsr_regressor:
             list: The predicted values.
             list: The true values.
         """
-        dependent_variable, independent_variables = load_data(
-            test_path, self.dependent_variable_name
-        )
-        predictions = list(map(self.predict, independent_variables))
+
+        predictions = list(map(self.predict, independent_variable))
 
         mean_square_error = mean_squared_error(
             np.array(predictions), dependent_variable
         )
 
-        logger.info(
-            f"\t\n Error when predicting on the test path: {test_path} \t\n The mean square error is {mean_square_error}"
-        )
+        logger.info(f"\t\n The mean square error is {mean_square_error}")
 
         return mean_square_error, predictions, dependent_variable

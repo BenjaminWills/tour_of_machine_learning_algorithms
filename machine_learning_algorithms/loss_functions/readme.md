@@ -28,3 +28,13 @@ Imagine that we had a ground truth $[0,1,0,0]$ i.e the item is category $1$ (the
 i.e if we're confident about the correct class then $\ln{(\hat{p}(\hat{y}))}$ is generally small and we have small loss and visa versa. In the case of $m = 2$ classes then $p(y_1) = 1 - p(y_2)$ thus the sum reduces to:
 
 $$\text{Binary cross entropy} = -\frac{1}{n}\sum_{i=1}^{n}p(y_i)\ln(\hat{p}(\hat{y}_i)) + (1-p(y_i))\ln(1-\hat{p}(\hat{y}_i))$$
+
+## The sigmoid function
+
+The sigmoid function allows us to squish the entire real number line into an interval between $0$ and $1$, as you can probably imagine this makes the sigmoid incredibly useful for interperating results as probabilities. It is defined as follows (see the logistic regression section for a more interesting derivation!).
+
+$$
+f(x) = \frac{1}{1 + e^{-x}}
+$$
+
+This function is very similar to the hyperbolic tangent, which squishes all of the real numbers into an interval between $-1$ and $1$.

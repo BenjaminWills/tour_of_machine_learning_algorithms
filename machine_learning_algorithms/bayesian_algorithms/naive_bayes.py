@@ -5,6 +5,13 @@ from typing import Dict, Union
 from collections import Counter
 
 
+def find_class_count(
+    classification_column: np.ndarray,
+) -> Dict[Union[int, str], float]:
+    class_counts = Counter(list(classification_column)).most_common()
+    return {class_: count for class_, count in class_counts}
+
+
 def calculate_prior_probabilities(
     classification_column: np.ndarray,
 ) -> Dict[Union[int, str], float]:
@@ -20,10 +27,131 @@ def calculate_prior_probabilities(
     Dict[Union[int, str], float]
         The prior probabilities of each class in the classification column.
     """
-    num_classes = len(classification_column)
-    class_counts = Counter(classification_column).most_common()
-    return {class_: count / num_classes for class_, count in class_counts}
+    num_rows = len(classification_column)
+    return {
+        class_: count / num_rows
+        for class_, count in find_class_count(classification_column).items()
+    }
 
 
-def calculate_posterior_probabilities() -> None:
-    pass
+def calculate_posterior_probabilities(
+    independent_variable_column: np.ndarray,
+    classification_column: np.ndarray,
+    alpha: float = 1,
+) -> Dict[Union[int, str], Dict[Union[int, str], float]]:
+    """Calculate the posterior probabilities of each class given the independent variable.
+    Thus each value within the output is the probability of seeing a class given that
+    we know the independent variable.
+
+    The outputs look like:
+    {
+        indep_var:
+        {
+            classification_var_1: count_1,
+            ...,
+            classification_var_n: count_n
+        },
+    ...}
+    Parameters
+    ----------
+    independent_variable_column : np.ndarray
+        The independent variable column of the dataset.
+    classification_column : np.ndarray
+        The classification column of the dataset.
+    alpha : float, optional
+        The Laplace smoothing parameter, by default 1.
+
+    Returns
+    -------
+    Dict[Union[int, str], float]: The posterior probabilities of each class given the independent variable.
+
+    """
+    unique_independent_variables = np.unique(independent_variable_column)
+    unique_classes = np.unique(classification_column)
+
+    # Unique class count
+    unique_class_counts = find_class_count(classification_column)
+
+    # Create a dictionary to store the counts of each class for each unique independent variable
+    conditional_probability_stroage = {}
+
+    for independent_variable in unique_independent_variables:
+        # Find indices of where the independent variable is equal to the unique independent variable
+        independent_indices = np.where(
+            independent_variable_column == independent_variable
+        )
+
+        # Find the counts of the classes within each independent variable value
+        classes = classification_column[independent_indices]
+        class_counts = find_class_count(classes)
+
+        # Calculate the conditional probability of each class given the independent variable
+        for class_ in unique_classes:
+            # Set the count to alpha if the class is not seen
+            if class_ not in class_counts:
+                class_counts[class_] = alpha
+            # Divide the count by the unique class count to find the proportion
+            if class_ in class_counts:
+                class_counts[class_] = (
+                    class_counts[class_] / unique_class_counts[class_]
+                )
+
+        # Store the conditional probability of each class given the independent variable
+        conditional_probability_stroage[independent_variable] = class_counts
+
+    return conditional_probability_stroage
+
+
+class naive_bayes_classifier:
+    def __init__(
+        self, indepdendent_variables: np.ndarray, classification_column: np.ndarray
+    ) -> None:
+        self.independent_variables = indepdendent_variables
+        self.classification_column = classification_column
+
+        self.classes = np.unique(classification_column)
+
+        self.priors = calculate_prior_probabilities(classification_column)
+        self.posteriors = self.calculate_posteriors()
+
+    def calculate_posteriors(
+        self,
+    ) -> Dict[Union[int, str], Dict[Union[int, str], float]]:
+        """Calculates the posterior probabilities of each class given and independent variable in the training set.
+
+        Returns
+        -------
+        Dict[Union[int, str], Dict[Union[int, str], float]]
+            The posterior probabilities of each class given an independent variable.
+        """
+        posteriors = {}
+        # Find the dimensionality of the independent variables
+        num_independent_variables = self.independent_variables.shape[1]
+
+        # Loop through each independent variable and calculate the posterior probabilities
+        for index in range(num_independent_variables):
+            independent_variable_column = self.independent_variables[:, index]
+            posteriors[index] = calculate_posterior_probabilities(
+                independent_variable_column, self.classification_column
+            )
+        return posteriors
+
+    def calculate_class_probability(
+        self, input_data: np.ndarray, class_: Union[int, str]
+    ) -> float:
+        probability = self.priors[class_]
+        for index, data in enumerate(input_data):
+            probability *= self.posteriors[index][data][class_]
+        return probability
+
+    def predict(self, input_data: np.ndarray) -> Dict[Union[int, str], float]:
+        # We loop through each potential class and calculate the probabilities of seeing this.
+        class_probabilities = {}
+        for class_ in self.classes:
+            class_probabilities[class_] = self.calculate_class_probability(
+                input_data, class_
+            )
+        class_probabilities["prediction"] = max(
+            class_probabilities, key=class_probabilities.get
+        )
+        return class_probabilities

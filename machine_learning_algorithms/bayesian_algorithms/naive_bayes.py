@@ -137,21 +137,32 @@ class naive_bayes_classifier:
         return posteriors
 
     def calculate_class_probability(
-        self, input_data: np.ndarray, class_: Union[int, str]
+        self, input_data: np.ndarray, class_: Union[int, str], alpha: float = 0.001
     ) -> float:
         probability = self.priors[class_]
-        for index, data in enumerate(input_data):
-            probability *= self.posteriors[index][data][class_]
+        for independent_variable_index, independent_variable_value in enumerate(
+            input_data
+        ):
+            try:
+                # The probability of the specified class ocurring given that we have a known
+                # value of the independent variable P(y = y | X = x).
+                posterior_probabilities = self.posteriors[independent_variable_index]
+                variable_posterior_probabilities = posterior_probabilities[
+                    independent_variable_value
+                ]
+                class_posterior_probability = variable_posterior_probabilities[class_]
+                probability *= class_posterior_probability
+            except KeyError as e:
+                # This is the case when the indepdent variable is not seen in the training set.
+                probability *= alpha
         return probability
 
-    def predict(self, input_data: np.ndarray) -> Dict[Union[int, str], float]:
+    def predict(self, input_data: np.ndarray) -> Union[int, str]:
         # We loop through each potential class and calculate the probabilities of seeing this.
         class_probabilities = {}
         for class_ in self.classes:
             class_probabilities[class_] = self.calculate_class_probability(
-                input_data, class_
+                input_data, class_, alpha=0.001
             )
-        class_probabilities["prediction"] = max(
-            class_probabilities, key=class_probabilities.get
-        )
-        return class_probabilities
+        class_prediction = max(class_probabilities, key=class_probabilities.get)
+        return class_prediction

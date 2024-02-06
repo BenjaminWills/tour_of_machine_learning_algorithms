@@ -145,7 +145,11 @@ class evaluate:
             precision = self.precision_recall[class_]["precision"]
             recall = self.precision_recall[class_]["recall"]
 
-            f1_score = 2 * (precision * recall) / (precision + recall)
+            denominator = precision + recall
+            if denominator == 0:
+                f1_score = 0
+            else:
+                f1_score = 2 * (precision * recall) / (precision + recall)
 
             f1_score_storage[class_] = f1_score
         return dict(f1_score_storage)

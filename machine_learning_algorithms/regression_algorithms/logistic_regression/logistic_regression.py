@@ -1,28 +1,12 @@
 import numpy as np
 
 from machine_learning_algorithms.loss_functions.cross_entropy import cross_entropy
-from machine_learning_algorithms.logger import make_logger
-from machine_learning_algorithms.data_engineering.data_loaders import (
-    load_categorical_data,
-)
+
 from machine_learning_algorithms.optimisation_algorithms.gradient_descent.gradient_descent import (
     gradient_descent,
 )
 
-from typing import Dict
-
-
-def sigmoid(x: np.ndarray) -> np.ndarray:
-    """
-    Calculate the sigmoid of a vector.
-
-    Args:
-        x (np.ndarray): Vector to calculate the sigmoid of.
-
-    Returns:
-        np.ndarray: Sigmoid of the vector.
-    """
-    return 1 / (1 + np.exp(-x))
+from machine_learning_algorithms.loss_functions.sigmoid import sigmoid
 
 
 def find_optimal_coefficients(

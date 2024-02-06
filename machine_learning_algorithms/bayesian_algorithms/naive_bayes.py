@@ -127,7 +127,7 @@ def calculate_posterior_probabilities(
     for class_, proportion in validation_dict.items():
         assert (
             abs(proportion - 1) < 0.05
-        ), f"Proportions for class {class_} do not sum to 1, they sum to {proportion}"
+        ), f"Proportions for class {class_} do not sum to 1, they sum to {proportion} \n {dict(validation_dict)} \n {dict(conditional_probability_stroage)}"
     return conditional_probability_stroage
 
 

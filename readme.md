@@ -46,7 +46,7 @@ Below are the categories of machine learning that I want to implement and the al
 --- 
 
 - [ ] Bayesian Algorithms
-  - [ ] Naive Bayes
+  - [x] Naive Bayes
   - [ ] Gaussian Naive Bayes
   - [ ] Multinomial Naive Bayes
   - [ ] Averaged One-Dependence Estimators (AODE)

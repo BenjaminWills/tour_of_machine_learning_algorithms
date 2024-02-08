@@ -1,10 +1,12 @@
 # Naive bayes
 
-The Naive Bayes algoirthm is based on baysean statistics, this means that we view the data as having a prior probability distribution, and use the learnings from the data to define a posterior probability distribution. The algorithm is naive as it does not consider the order of data being entered into it, and thus is highly biased towards non ordered words.
+The Naive Bayes algoirthm is based on baysean statistics, this means that we view the data as having a prior probability distribution, and use the learnings from the data to define a posterior probability distribution. The algorithm is naive as it assumes that the data is independently distributed.
 
 ## The maths
 
 The naive bayes classifier relies on bayes theorem:
+
+Note that $\mathbb{P}(A|B) = \frac{\mathbb{P}(A \cap B)}{\mathbb{P}(B)}$. I.e it is the ratio of the probability that events A and B occur over the probability that B occurs at all, conditional probability is just the probability on a subset of our data.
 
 $$
 \mathbb{P}(A|B) = \frac{\mathbb{P}(B|A)\mathbb{P}(A)}{\mathbb{P}(B)}

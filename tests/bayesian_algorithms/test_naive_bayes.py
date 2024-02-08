@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from machine_learning_algorithms.bayesian_algorithms.naive_bayes import (
+from machine_learning_algorithms.bayesian_algorithms.naive_bayes.naive_bayes import (
     find_class_count,
     calculate_prior_probabilities,
     calculate_posterior_probabilities,

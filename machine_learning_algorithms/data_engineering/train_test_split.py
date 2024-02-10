@@ -1,7 +1,9 @@
 import numpy as np
 
 
-def test_train_split(data: np.ndarray, train_size: float = 0.8, random_seed: int = 42):
+def test_train_split(
+    data: np.ndarray, train_size: float = 0.8, random_seed: int = None
+):
     """
     Splits the inputted data into training and testing sets.
 
@@ -18,7 +20,8 @@ def test_train_split(data: np.ndarray, train_size: float = 0.8, random_seed: int
             - test_y (np.ndarray): The labels of the testing set.
     """
     # Set random seed for reproducibility
-    np.random.seed(random_seed)
+    if random_seed:
+        np.random.seed(random_seed)
 
     # Shuffle the data
     np.random.shuffle(data)

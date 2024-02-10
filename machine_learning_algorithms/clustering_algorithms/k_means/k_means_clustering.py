@@ -1,6 +1,6 @@
 import numpy as np
 
-from typing import List, Dict
+from typing import List, Dict, Union
 
 from collections import defaultdict
 from tqdm import tqdm
@@ -10,7 +10,7 @@ DATAPOINT_VALUE = np.ndarray
 DATAPOINT_DISTANCE = float
 
 PACKAGED_CLUSTER_INFORMATION = Dict[
-    CLUSTER_INDEX, List[Dict[str, DATAPOINT_VALUE | DATAPOINT_DISTANCE]]
+    CLUSTER_INDEX, List[Dict[str, Union[DATAPOINT_VALUE, DATAPOINT_DISTANCE]]]
 ]
 
 
@@ -172,7 +172,7 @@ class k_means_clustering:
             # Fill in dictionary
             packaged_cluster_information[cluster_index].append(datapoint_information)
 
-        return packaged_cluster_information
+        return dict(packaged_cluster_information)
 
     def calculate_centroid_distances(
         self, centroids: List[np.array]

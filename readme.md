@@ -56,8 +56,8 @@ Below are the categories of machine learning that I want to implement and the al
 ---
 
 - [ ] Clustering Algorithms
-  - [ ] k-Means
-  - [ ] k-Medians
+  - [x] k-Means
+  - [x] k-Medians
   - [ ] Expectation Maximisation (EM)
   - [ ] Hierarchical Clustering
 

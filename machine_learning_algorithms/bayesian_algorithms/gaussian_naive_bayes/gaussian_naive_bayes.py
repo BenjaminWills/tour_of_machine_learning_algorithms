@@ -9,36 +9,6 @@ from scipy.stats import norm
 from typing import Dict, Union
 
 
-def calculate_gaussian_probability(x: float, mean: float, std: float) -> float:
-    """
-    Calculate the Gaussian probability of a given value.
-
-    Parameters
-    ----------
-    x : float
-        The value for which to calculate the Gaussian probability.
-    mean : float
-        The mean of the Gaussian distribution.
-    std : float
-        The std of the Gaussian distribution.
-
-    Returns
-    -------
-    float
-        The Gaussian probability of the given value.
-    """
-
-    for var_name, var in zip(["x", "mean", "stf"], [x, mean, std]):
-        if type(var) not in [float, int, np.float64]:
-            raise ValueError(
-                f"Argument: {var_name} with the value: {var} and the type: {type(var)} is not a float or an integer."
-            )
-
-    return (1 / (np.sqrt(2 * np.pi) * std)) * np.exp(
-        -((x - mean) ** 2) / (2 * std**2)
-    )
-
-
 def calculate_gaussian_mean_and_std(
     independent_variable: np.ndarray, classification_column: np.ndarray
 ) -> Dict[Union[int, str], Dict[str, float]]:
@@ -120,5 +90,10 @@ class gaussian_naive_bayes(naive_bayes_classifier):
             mean, std = self.posteriors[independent_variable_index][class_].values()
             # Calculate gaussian likelihood of seeing the class given the values that we've seen
             # P(y = y | X = x).
-            probability *= norm.cdf(independent_variable_value, mean, std)
+            if std != 0:
+                probability *= norm.pdf(independent_variable_value, mean, std)
+            else:
+                probability *= norm.cdf(
+                    independent_variable_value, mean, self.laplace_smoothing_parameter
+                )
         return probability

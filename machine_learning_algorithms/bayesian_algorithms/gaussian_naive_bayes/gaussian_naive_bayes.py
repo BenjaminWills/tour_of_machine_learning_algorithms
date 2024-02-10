@@ -3,6 +3,8 @@ from machine_learning_algorithms.bayesian_algorithms.naive_bayes.naive_bayes imp
     find_class_count,
 )
 import numpy as np
+from scipy.stats import norm
+
 
 from typing import Dict, Union
 
@@ -25,6 +27,13 @@ def calculate_gaussian_probability(x: float, mean: float, std: float) -> float:
     float
         The Gaussian probability of the given value.
     """
+
+    for var_name, var in zip(["x", "mean", "stf"], [x, mean, std]):
+        if type(var) not in [float, int, np.float64]:
+            raise ValueError(
+                f"Argument: {var_name} with the value: {var} and the type: {type(var)} is not a float or an integer."
+            )
+
     return (1 / (np.sqrt(2 * np.pi) * std)) * np.exp(
         -((x - mean) ** 2) / (2 * std**2)
     )
@@ -59,7 +68,7 @@ def calculate_gaussian_mean_and_std(
         std = np.std(independent_variable[classification_indices])
 
         mean_and_std[unique_class] = {"mean": mean, "std": std}
-
+    # INHERITENCE MAY NOT BE WISE...
     return mean_and_std
 
 
@@ -73,59 +82,43 @@ class gaussian_naive_bayes(naive_bayes_classifier):
         super().__init__(
             indepdendent_variables, classification_column, laplace_smoothing_parameter
         )
+        self.posteriors = self.calculate_posteriors()
 
-    def calculate_posterior_probabilities(
-        self,
-        independent_variables: np.ndarray,
-    ) -> Dict[Union[int, str], Dict[Union[int, str], float]]:
-        """Calculate the gaussian posterior probabilities of each class given the independent variable.
-        Thus each value within the output is the probability of seeing a class given that
-        we know the independent variable.
+    def calculate_posteriors(self):
+        posterior_mean_std = {}
+        for index, column in enumerate(self.independent_variables.T):
+            posterior_mean_std[index] = calculate_gaussian_mean_and_std(
+                column, self.classification_column
+            )
+        return posterior_mean_std
 
-        The outputs look like:
-        {
-            indep_var:
-            {
-                classification_var_1: count_1,
-                ...,
-                classification_var_n: count_n
-            },
-        ...}
+    def calculate_class_probability(
+        self, input_data: np.ndarray, class_: Union[int, str]
+    ) -> float:
+        """
+        Calculate the probability of a given class occurring given the input data.
+
         Parameters
         ----------
-        independent_variables : np.ndarray
-            The independent variable column of the dataset.
+        input_data : np.ndarray
+            The input data for which the class probability is calculated.
+        class_ : Union[int, str]
+            The class for which the probability is calculated.
+        alpha : float, optional
+            The Laplace smoothing parameter, by default 0.001.
 
         Returns
         -------
-        Dict[Union[int, str], float]: The posterior probabilities of each class given the independent variable.
-
+        float
+            The probability of the specified class occurring given the input data.
         """
-
-        """
-        So, we need to calculate the posterior probabilities of each class given the independent variable.
-
-        thus we loop through each independent variable column and calculate the following:
-            * the mean and variance of the independent variable for each class in the form:
-                {
-                    indep_var: {
-                        classification_var_1: {
-                            mean: mean_1,
-                            variance: variance_1
-                        },
-                        ...,
-                        classification_var_n: {
-                            mean: mean_n,
-                            variance: variance_n
-                        }
-                    },
-                    }
-                }
-            * the gaussian probability of each class given the independent variable in the form:
-                {
-                    indep_var: {
-                        classification_var_1: probability_1,
-                        ...,
-                        classification_var_n: probability_n
-                    }
-        """
+        prior_probability = self.priors[class_]
+        probability = prior_probability
+        for independent_variable_index, independent_variable_value in enumerate(
+            input_data
+        ):
+            mean, std = self.posteriors[independent_variable_index][class_].values()
+            # Calculate gaussian likelihood of seeing the class given the values that we've seen
+            # P(y = y | X = x).
+            probability *= norm.cdf(independent_variable_value, mean, std)
+        return probability

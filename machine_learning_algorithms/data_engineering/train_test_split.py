@@ -21,14 +21,14 @@ def test_train_split(data: np.ndarray, train_size: float = 0.8, random_seed: int
     np.random.seed(random_seed)
 
     # Shuffle the data
-    shuffled_data = np.random.shuffle(data)
+    np.random.shuffle(data)
 
     # Split the data into training and testing sets
     training_rows = int(len(data) * train_size)
 
     # Split the data into training and testing sets
-    training_data = shuffled_data[:training_rows]
-    testing_data = shuffled_data[training_rows:]
+    training_data = data[:training_rows]
+    testing_data = data[training_rows:]
 
     # Split the data into features and labels
     train_X, train_y = training_data[:, :-1], training_data[:, -1]

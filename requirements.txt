@@ -3,6 +3,7 @@ pandas
 
 # Mathematical operations
 numpy
+scipy
 
 # Add linters
 black

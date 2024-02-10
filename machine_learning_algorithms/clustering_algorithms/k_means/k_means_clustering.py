@@ -67,11 +67,13 @@ def calculate_dunn_index(
     except:
         print("failed to calculate max_intracluster_distance")
         print(cluster_diameters)
+        print(centroids)
     try:
         min_intercluster_distance = min(cluster_distances)
     except:
         print("failed to calculate min_intercluster_distance")
         print(cluster_distances)
+        print(centroids)
 
     dunn_index = min_intercluster_distance / max_intracluster_distance
     return dunn_index
@@ -187,9 +189,6 @@ class k_means_clustering:
 
         centroids = initial_centroids
 
-        # Keep track of iteration count
-        iteration_count = 1
-
         for iteration in tqdm(range(self.max_iterations)):
             # Define which points belong to each cluster
             cluster_information = self.calculate_centroid_distances(centroids)
@@ -197,7 +196,7 @@ class k_means_clustering:
             # Define the new centroids
             new_centroids = self.calculate_mean_centroids(cluster_information)
 
-            if iteration_count % 1_000 == 0:
+            if iteration % 1_000 == 0:
                 inertia = calculate_inertia(cluster_information)
                 dunn_index = calculate_dunn_index(cluster_information, new_centroids)
                 print(f"Inertia: {inertia}\nDunn Index: {dunn_index}")
@@ -208,13 +207,6 @@ class k_means_clustering:
                 break
 
             centroids = new_centroids
-
-            if iteration_count > self.max_iterations:
-                # End loop if we have reached the maximum number of iterations
-                break
-
-            # Update the iteration count
-            iteration_count += 1
 
         self.inertia = calculate_inertia(cluster_information)
         self.dunn_index = calculate_dunn_index(cluster_information, centroids)

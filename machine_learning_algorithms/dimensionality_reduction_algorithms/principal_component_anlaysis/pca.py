@@ -1,44 +1,55 @@
 import numpy as np
 
+from typing import Dict
 
-def pca(data: np.ndarray, num_components: int) -> np.ndarray:
-    covariance_matrix = np.cov(data)
 
-    # check the determinant of the covariance matrix
-    if np.linalg.det(covariance_matrix) == 0:
-        raise ValueError("The covariance matrix is not invertible.")
+class pca:
+    def __init__(self, data: np.ndarray) -> None:
+        # Check argument types
+        if not isinstance(data, np.ndarray):
+            raise TypeError("Data should be a numpy array.")
+        self.data = data
 
-    # Check if number of components is greater than the number of features
-    if num_components > data.shape[1]:
-        raise ValueError(
-            "The number of components cannot be greater than the number of features."
-        )
+        self.pca = self.get_pca()
+        self.order_of_importance = np.argsort(self.pca["eigenvalues"])[::-1]
 
-    # Check if number of components is greater than the number of samples
-    if num_components > data.shape[0]:
-        raise ValueError(
-            "The number of components cannot be greater than the number of samples."
-        )
+    def get_pca(self) -> Dict[str, np.ndarray]:
+        # Calcualte the covariance matrix of the independent variables
+        covariance_matrix = np.cov(self.data.T)
 
-    # Check argument types
-    if not isinstance(data, np.ndarray):
-        raise TypeError("Data should be a numpy array.")
-    if not isinstance(num_components, int):
-        raise TypeError("Number of components should be an integer.")
+        # calculate the eigenvalues and eigenvectors of the covariance matrix
+        eigenvalues, eigenvectors = np.linalg.eig(covariance_matrix)
 
-    # calculate the eigenvalues and eigenvectors of the covariance matrix
-    eigenvalues, eigenvectors = np.linalg.eig(covariance_matrix)
+        # Make vectors into unit vectors
+        eigenvectors = eigenvectors / np.linalg.norm(eigenvectors, axis=0)
 
-    # Make vectors into unit vectors
-    eigenvectors = eigenvectors / np.linalg.norm(eigenvectors, axis=0)
+        return {
+            "eigenvalues": eigenvalues,
+            "eigenvectors": eigenvectors,
+        }
 
-    # sort the eigenvalues and eigenvectors in descending order
-    sorted_indices = np.argsort(eigenvalues)[::-1]
+    def reduce_dimensionality(self, num_components: int) -> np.ndarray:
+        # Check if number of components is greater than the number of features
+        if num_components > self.data.shape[1]:
+            raise ValueError(
+                "The number of components cannot be greater than the number of features."
+            )
 
-    # select the top k eigenvectors
-    top_eigenvectors = eigenvectors[:, sorted_indices[:num_components]]
+        # Check if number of components is greater than the number of samples
+        if num_components > self.data.shape[0]:
+            raise ValueError(
+                "The number of components cannot be greater than the number of samples."
+            )
 
-    # project the data onto the top k eigenvectors
-    projected_data = np.dot(data, top_eigenvectors)
+        if not isinstance(num_components, int):
+            raise TypeError("Number of components should be an integer.")
 
-    return projected_data
+        eigenvectors = self.pca["eigenvectors"]
+
+        # select the top k eigenvectors
+        top_eigenvectors = eigenvectors[:, self.order_of_importance[:num_components]]
+
+        # project the data onto the top k eigenvectors
+        projected_data = np.dot(self.data, top_eigenvectors)
+
+        return projected_data

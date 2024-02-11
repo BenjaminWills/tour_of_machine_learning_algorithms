@@ -91,7 +91,7 @@ Below are the categories of machine learning that I want to implement and the al
 ---
 
 - [ ] Dimensionality Reduction Algorithms
-  - [ ] Principal Component Analysis (PCA)
+  - [x] Principal Component Analysis (PCA)
   - [ ] Principal Component Regression (PCR)
   - [ ] Partial Least Squares Regression (PLSR)
   - [ ] Sammon Mapping

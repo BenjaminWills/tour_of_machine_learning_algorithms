@@ -20,6 +20,12 @@ def pca(data: np.ndarray, num_components: int) -> np.ndarray:
             "The number of components cannot be greater than the number of samples."
         )
 
+    # Check argument types
+    if not isinstance(data, np.ndarray):
+        raise TypeError("Data should be a numpy array.")
+    if not isinstance(num_components, int):
+        raise TypeError("Number of components should be an integer.")
+
     # calculate the eigenvalues and eigenvectors of the covariance matrix
     eigenvalues, eigenvectors = np.linalg.eig(covariance_matrix)
 

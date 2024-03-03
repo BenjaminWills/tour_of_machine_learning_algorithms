@@ -60,7 +60,7 @@ $$
 Hence we can summarise this by writing the optimisation problem as follows:
 
 $$
-\max_\alpha L_D = \sum_{i=1}^{d}\lambda_i - \frac{1}{2} \sum_{i=1}^{d} \sum_{j=1}^{d}\lambda_i \lambda_ jy_iy_j(\bold{x}_i.\bold{x}_j) \\
+\max_\lambda L_D = \sum_{i=1}^{d}\lambda_i - \frac{1}{2} \sum_{i=1}^{d} \sum_{j=1}^{d}\lambda_i \lambda_ jy_iy_j(\bold{x}_i.\bold{x}_j) \\
 \text{with the linear constraints: } \lambda_i \geq 0, \sum_{i=1}^{d}\lambda_iy_i = 0
 $$
 

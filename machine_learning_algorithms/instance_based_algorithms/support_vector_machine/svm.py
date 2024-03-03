@@ -94,7 +94,7 @@ class SVM:
             The value of the objective function.
         """
         weights = self.calculate_weights(lagrange_multipliers)
-        return sum(lagrange_multipliers) - 0.5 * np.linalg.dot(weights, weights)
+        return sum(lagrange_multipliers) - 0.5 * np.dot(weights, weights)
 
     def optimise_dual_problem(self) -> np.ndarray:
         """

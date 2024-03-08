@@ -22,7 +22,7 @@ Below are the categories of machine learning that I want to implement and the al
   - [ ] Learning Vector Quantization (LVQ)
   - [ ] Self-Organizing Map (SOM)
   - [ ] Locally Weighted Learning (LWL)
-  - [ ] Support Vector Machines (SVM)
+  - [x] Support Vector Machines (SVM)
 
 --- 
 
